@@ -1,6 +1,7 @@
 package idoelad.finalproject.core.userparams;
 
 import idoelad.finalproject.core.bigtouch.UserParamsBigTouch;
+import idoelad.finalproject.core.deviationtouch.UserParamsDeviationTouch;
 import idoelad.finalproject.core.multitouch.UserParamsMultiTouch;
 import idoelad.finalproject.core.userparams.UserParamsHolder;
 
@@ -27,6 +28,10 @@ public class UserParamsHandler {
 	
 	public static UserParamsMultiTouch loadUserParamsMulti() throws FileNotFoundException, IOException{
 		return mapToParamsMulti(loadUserParams());
+	}
+	
+	public static UserParamsDeviationTouch loadUserParamsDev() throws FileNotFoundException, IOException{
+		return mapToParamsDev(loadUserParams());
 	}
 	
 	private static HashMap<String, HashMap<String, Double>> loadUserParams(String dirPath) throws FileNotFoundException, IOException{
@@ -70,11 +75,13 @@ public class UserParamsHandler {
 	
 	
 	/////////////// SAVE ///////////////
-	public static void saveUserParams(UserParamsBigTouch upBig, UserParamsMultiTouch upMulti) throws IOException {
-		HashMap<String, HashMap<String, Double>> params = paramsToMap(upBig, upMulti);
+	public static void saveUserParams(UserParamsBigTouch upBig, UserParamsMultiTouch upMulti, UserParamsDeviationTouch upDev) throws IOException {
+		HashMap<String, HashMap<String, Double>> params = paramsToMap(upBig, upMulti, upDev);
 		saveUserParams(params);
 		UserParamsHolder.upBig = upBig;
 		UserParamsHolder.upMulti = upMulti;
+		UserParamsHolder.upDev = upDev;
+		
 	}
 	
 	private static void saveUserParams(HashMap<String, HashMap<String, Double>> params) throws IOException {
@@ -98,6 +105,7 @@ public class UserParamsHandler {
 			bw.close();
 		}
 	}
+	
 	///////////////INIT FILES///////////
 	public static void initUserParamsFiles(File appFolder) throws IOException{;
 		File userParamsDir = new File(appFolder,"userParams");
@@ -120,6 +128,13 @@ public class UserParamsHandler {
 			multi.put("wStructure", 0.0);
 			params.put("multi", multi);
 			
+			HashMap<String, Double> dev = new HashMap<String, Double>();
+			dev.put("xDev", 0.0);
+			dev.put("yDev", 0.0);
+			dev.put("xWeight", 0.0);
+			dev.put("yWeight", 0.0);
+			params.put("dev", dev);
+			
 			saveUserParams(params,userParamsDir.getAbsolutePath());
 		}
 		userParamsDirPath = userParamsDir.getAbsolutePath();
@@ -128,7 +143,7 @@ public class UserParamsHandler {
 	
 	
 	//////////////////////////
-	private static HashMap<String, HashMap<String, Double>> paramsToMap(UserParamsBigTouch upBig, UserParamsMultiTouch upMulti){
+	private static HashMap<String, HashMap<String, Double>> paramsToMap(UserParamsBigTouch upBig, UserParamsMultiTouch upMulti, UserParamsDeviationTouch upDev){
 		HashMap<String, HashMap<String, Double>> map = new HashMap<>();
 		
 		HashMap<String, Double> big = new HashMap<String, Double>();
@@ -146,6 +161,13 @@ public class UserParamsHandler {
 		multi.put("wStructure", upMulti.getwStructure());
 		map.put("multi", multi);
 		
+		HashMap<String, Double> dev = new HashMap<String, Double>();
+		dev.put("xDev", upDev.getxDev());
+		dev.put("yDev", upDev.getyDev());
+		dev.put("xWeight", upDev.getxWeight());
+		dev.put("yWeight", upDev.getyWeight());
+		map.put("dev", dev);
+		
 		return map;
 	}
 	
@@ -160,6 +182,12 @@ public class UserParamsHandler {
 		HashMap<String, Double> multiMap = map.get("multi");
 		UserParamsMultiTouch upMulti = new UserParamsMultiTouch(multiMap.get("wFirst"), multiMap.get("wMaxPress"), multiMap.get("wMaxTime"), multiMap.get("wStructure"));
 		return upMulti;	
+	}
+	
+	private static UserParamsDeviationTouch mapToParamsDev(HashMap<String, HashMap<String, Double>> map){
+		HashMap<String, Double> devMap = map.get("dev");
+		UserParamsDeviationTouch upDev = new UserParamsDeviationTouch(devMap.get("xDev"), devMap.get("yDev"), devMap.get("xWeight"), devMap.get("yWeight"));
+		return upDev;
 	}
 
 	
