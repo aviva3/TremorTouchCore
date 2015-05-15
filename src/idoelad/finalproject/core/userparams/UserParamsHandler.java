@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 
 
 public class UserParamsHandler {
-	public static String userParamsDirPath;
+	public static final String USER_PARAMS_DIR = "/storage/emulated/0/TremorTouchLauncher/userParams";
 
 	/////////////// LOAD ///////////////
 	public static UserParamsBigTouch loadUserParamsBig() throws FileNotFoundException, IOException{
@@ -50,7 +50,7 @@ public class UserParamsHandler {
 	}
 	
 	private static HashMap<String, HashMap<String, Double>> loadUserParams() throws FileNotFoundException, IOException{
-		return loadUserParams(userParamsDirPath);
+		return loadUserParams(USER_PARAMS_DIR);
 	}
 	
 	
@@ -85,12 +85,8 @@ public class UserParamsHandler {
 	}
 	
 	private static void saveUserParams(HashMap<String, HashMap<String, Double>> params) throws IOException {
-		saveUserParams(params,userParamsDirPath);
-	}
-	
-	private static void saveUserParams(HashMap<String, HashMap<String, Double>> params, String dirPath) throws IOException {
 		for (Entry<String, HashMap<String, Double>> entry : params.entrySet()){
-			File fout = new File(dirPath,"user_params_"+entry.getKey()+".txt");
+			File fout = new File(USER_PARAMS_DIR,"user_params_"+entry.getKey()+".txt");
 			FileOutputStream fos = new FileOutputStream(fout);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 			
@@ -107,8 +103,8 @@ public class UserParamsHandler {
 	}
 	
 	///////////////INIT FILES///////////
-	public static void initUserParamsFiles(File appFolder) throws IOException{;
-		File userParamsDir = new File(appFolder,"userParams");
+	public static void initUserParamsFiles() throws IOException{;
+		File userParamsDir = new File(USER_PARAMS_DIR);
 		if (!userParamsDir.exists()){
 			userParamsDir.mkdir();
 			HashMap<String, HashMap<String, Double>> params = new HashMap<String, HashMap<String,Double>>();
@@ -135,9 +131,8 @@ public class UserParamsHandler {
 			dev.put("yWeight", 0.0);
 			params.put("dev", dev);
 			
-			saveUserParams(params,userParamsDir.getAbsolutePath());
+			saveUserParams(params);
 		}
-		userParamsDirPath = userParamsDir.getAbsolutePath();
 		
 	}
 	
