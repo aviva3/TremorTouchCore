@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BigTouch extends TouchType{
-	public static UserParamsBigTouch getBigTouchParams(ArrayList<Test> tests) throws IOException{
+	public static UserParamsBigTouch getBigTouchParams(ArrayList<Test> tests){
 
 		double totDistAvg = 0;
 		double totDistDown = 0;

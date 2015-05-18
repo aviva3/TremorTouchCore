@@ -84,6 +84,28 @@ public class UserParamsHandler {
 		
 	}
 	
+	public static void updateUserParamsFromTraining(UserParamsBigTouch upBig, UserParamsMultiTouch upMulti, UserParamsDeviationTouch upDev, double factor) throws FileNotFoundException, IOException{
+		HashMap<String, HashMap<String, Double>> currParams = loadUserParams();
+		HashMap<String, HashMap<String, Double>> newParams = paramsToMap(upBig, upMulti, upDev);
+		
+		for (String mapType : currParams.keySet()){
+			HashMap<String, Double> currParamsValues = currParams.get(mapType);
+			HashMap<String, Double> newParamsValues =  newParams.get(mapType);
+				
+			for (String key : currParamsValues.keySet()){
+				double currValue = currParamsValues.get(key);
+				double newValue = newParamsValues.get(key);
+				currParamsValues.put(key, newValue*factor + currValue*(1-factor));
+			}
+		}
+		
+		saveUserParams(currParams);
+		UserParamsHolder.upBig = loadUserParamsBig();
+		UserParamsHolder.upMulti = loadUserParamsMulti();
+		UserParamsHolder.upDev = loadUserParamsDev();
+		
+	}
+	
 	private static void saveUserParams(HashMap<String, HashMap<String, Double>> params) throws IOException {
 		for (Entry<String, HashMap<String, Double>> entry : params.entrySet()){
 			File fout = new File(USER_PARAMS_DIR,"user_params_"+entry.getKey()+".txt");
